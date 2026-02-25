@@ -1,0 +1,130 @@
+{% extends "cars/base.html" %}
+{% block title %}Owner Dashboard{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="fw-bold mb-0">Owner Dashboard</h3>
+  <a class="btn btn-accent" href="/owner/cars/add/">+ Add Car</a>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-6 col-lg-3">
+    <div class="card card-glass shadow-soft h-100">
+      <div class="card-body">
+        <div class="small-meta">Total Cars</div>
+        <div class="h4 mb-0">{{ analytics.total_cars|default:0 }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card card-glass shadow-soft h-100">
+      <div class="card-body">
+        <div class="small-meta">Available</div>
+        <div class="h4 mb-0">{{ analytics.available_count|default:0 }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card card-glass shadow-soft h-100">
+      <div class="card-body">
+        <div class="small-meta">Sold Units</div>
+        <div class="h4 mb-0">{{ analytics.sold_count|default:0 }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card card-glass shadow-soft h-100">
+      <div class="card-body">
+        <div class="small-meta">Sold This Month</div>
+        <div class="h4 mb-0">{{ analytics.sold_this_month|default:0 }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-lg-6">
+    <div class="card card-glass shadow-soft h-100">
+      <div class="card-body">
+        <div class="small-meta">Sold Revenue</div>
+        <div class="h4 mb-0">PHP {{ analytics.sold_revenue|default:0 }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card card-glass shadow-soft h-100">
+      <div class="card-body">
+        <div class="small-meta">Available Inventory Value</div>
+        <div class="h4 mb-0">PHP {{ analytics.available_value|default:0 }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="card card-glass shadow-soft">
+      <div class="card-body">
+        <h5 class="fw-bold mb-3">My Cars</h5>
+        {% for car in cars %}
+          <div class="d-flex align-items-center gap-3 border rounded p-2 mb-2 bg-white owner-row">
+            <div style="width:90px;height:60px;overflow:hidden;border-radius:8px;background:#eee;">
+              {% if car.main_image %}
+                <img src="{{ car.main_image.image.url }}" style="width:100%;height:100%;object-fit:cover;" alt="car">
+              {% endif %}
+            </div>
+            <div class="flex-grow-1">
+              <div class="fw-bold owner-row-title">{{ car }}</div>
+              <div class="owner-row-meta">PHP {{ car.price }} | {{ car.location }}</div>
+              <div class="owner-row-meta mt-1">
+                {% if car.is_available %}
+                  <span class="badge bg-success">Available</span>
+                {% else %}
+                  <span class="badge bg-secondary">Not Listed</span>
+                {% endif %}
+                {% if car.sold_at %}
+                  <span class="badge bg-dark">Sold</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="d-flex gap-2 flex-wrap justify-content-end">
+              <a class="btn btn-sm btn-outline-dark" href="/owner/cars/{{ car.id }}/edit/">Edit</a>
+              <a class="btn btn-sm btn-outline-primary" href="/owner/cars/{{ car.id }}/images/">Images</a>
+              {% if car.is_available %}
+                <a class="btn btn-sm btn-danger" href="/owner/cars/{{ car.id }}/sold/">Mark Sold</a>
+              {% else %}
+                <a class="btn btn-sm btn-success" href="/owner/cars/{{ car.id }}/available/">Re-list</a>
+              {% endif %}
+            </div>
+          </div>
+        {% empty %}
+          <div class="text-muted-2">No cars yet.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card card-glass shadow-soft">
+      <div class="card-body">
+        <h5 class="fw-bold mb-3">Latest Bookings</h5>
+        {% for b in bookings %}
+          <div class="border rounded p-2 mb-2 bg-white booking-row">
+            <div class="fw-bold booking-row-title">{{ b.full_name }} <span class="badge bg-secondary">{{ b.status }}</span></div>
+            <div class="booking-row-meta">{{ b.car }} | {{ b.preferred_date }} {{ b.preferred_time }}</div>
+            <div class="booking-row-meta">Phone: {{ b.phone }} {% if b.email %}| Email: {{ b.email }}{% endif %}</div>
+            <div class="d-flex gap-2 mt-2">
+              <a class="btn btn-sm btn-success" href="/owner/bookings/{{ b.id }}/Approved/">Approve</a>
+              <a class="btn btn-sm btn-danger" href="/owner/bookings/{{ b.id }}/Rejected/">Reject</a>
+              <a class="btn btn-sm btn-dark" href="/owner/bookings/{{ b.id }}/Done/">Done</a>
+            </div>
+          </div>
+        {% empty %}
+          <div class="text-muted-2">No bookings yet.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

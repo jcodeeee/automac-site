@@ -1,0 +1,161 @@
+{% extends "cars/base.html" %}
+{% block title %}Inventory{% endblock %}
+
+{% block content %}
+<div class="hero shadow-soft mb-4">
+  <h2 class="section-title mb-2">Browse Inventory</h2>
+  <p class="text-muted-2 mb-0">Find available cars and narrow the list with filters.</p>
+</div>
+
+<form method="get" class="card card-glass shadow-soft mb-4 inventory-filters">
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-md-3">
+        <label class="form-label text-muted-2">Search</label>
+        <input class="form-control soft-input" name="q" value="{{ request.GET.q }}" placeholder="Brand, model, location">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label text-muted-2">Brand</label>
+        <select class="form-select soft-input" name="brand">
+          <option value="">All</option>
+          {% for b in brand_options %}
+            <option value="{{ b.brand }}" {% if request.GET.brand == b.brand %}selected{% endif %}>{{ b.brand }} ({{ b.count }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label text-muted-2">Transmission</label>
+        <select class="form-select soft-input" name="trans">
+          <option value="">All</option>
+          <option value="Automatic" {% if request.GET.trans == "Automatic" %}selected{% endif %}>Automatic</option>
+          <option value="Manual" {% if request.GET.trans == "Manual" %}selected{% endif %}>Manual</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label text-muted-2">Fuel</label>
+        <select class="form-select soft-input" name="fuel">
+          <option value="">All</option>
+          <option value="Gasoline" {% if request.GET.fuel == "Gasoline" %}selected{% endif %}>Gasoline</option>
+          <option value="Diesel" {% if request.GET.fuel == "Diesel" %}selected{% endif %}>Diesel</option>
+          <option value="Hybrid" {% if request.GET.fuel == "Hybrid" %}selected{% endif %}>Hybrid</option>
+          <option value="Electric" {% if request.GET.fuel == "Electric" %}selected{% endif %}>Electric</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label text-muted-2">Sort</label>
+        <select class="form-select soft-input" name="sort">
+          <option value="newest" {% if selected_sort == "newest" %}selected{% endif %}>Newest</option>
+          <option value="price_asc" {% if selected_sort == "price_asc" %}selected{% endif %}>Price: Low to High</option>
+          <option value="price_desc" {% if selected_sort == "price_desc" %}selected{% endif %}>Price: High to Low</option>
+          <option value="year_desc" {% if selected_sort == "year_desc" %}selected{% endif %}>Year: Newest</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label text-muted-2">Min Price</label>
+        <input class="form-control soft-input js-price-input" name="min_price" value="{{ display_min_price }}" inputmode="numeric" placeholder="e.g. 1,200,000">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label text-muted-2">Max Price</label>
+        <input class="form-control soft-input js-price-input" name="max_price" value="{{ display_max_price }}" inputmode="numeric" placeholder="e.g. 12,000,000">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label text-muted-2">Min Year</label>
+        <select class="form-select soft-input" name="min_year">
+          <option value="">Any</option>
+          {% for y in year_options %}
+            <option value="{{ y }}" {% if request.GET.min_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label text-muted-2">Max Year</label>
+        <select class="form-select soft-input" name="max_year">
+          <option value="">Any</option>
+          {% for y in year_options %}
+            <option value="{{ y }}" {% if request.GET.max_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 d-flex gap-2 mt-2">
+        <button class="btn btn-accent px-4" type="submit">Apply Filters</button>
+        <a class="btn btn-outline-light px-4" href="/inventory/">Clear All</a>
+        <div class="ms-auto text-muted-2 align-self-center small-meta">
+          {{ page_obj.paginator.count }} results
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="row g-3">
+  {% for car in cars %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card card-glass shadow-soft h-100">
+        {% if car.main_image %}
+          <img src="{{ car.main_image.image.url }}" class="car-card-img" alt="car">
+        {% else %}
+          <div class="d-flex align-items-center justify-content-center" style="height:190px;background:rgba(255,255,255,.06);border-top-left-radius:18px;border-top-right-radius:18px;">
+            <span class="text-muted-2">No image</span>
+          </div>
+        {% endif %}
+        <div class="card-body">
+          <div class="fw-bold">{{ car }}</div>
+          <div class="small-meta">{{ car.location }} | {{ car.transmission }} | {{ car.fuel }}</div>
+          <div class="price mt-2">PHP {{ car.price }}</div>
+          <a class="btn btn-accent btn-sm mt-2" href="/cars/{{ car.id }}/">View</a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="text-muted-2">No listings match your filters.</div>
+  {% endfor %}
+</div>
+
+{% if page_obj.paginator.num_pages > 1 %}
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+        {% if page_obj.has_previous %}
+          <a class="page-link" href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+        {% else %}
+          <span class="page-link">Previous</span>
+        {% endif %}
+      </li>
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+        {% elif num >= page_obj.number|add:-2 and num <= page_obj.number|add:2 %}
+          <li class="page-item">
+            <a class="page-link" href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ num }}">{{ num }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+        {% if page_obj.has_next %}
+          <a class="page-link" href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+        {% else %}
+          <span class="page-link">Next</span>
+        {% endif %}
+      </li>
+    </ul>
+  </nav>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function formatPriceInput(value) {
+    const digitsOnly = value.replace(/[^\d]/g, "");
+    if (!digitsOnly) return "";
+    return Number(digitsOnly).toLocaleString("en-US");
+  }
+
+  document.querySelectorAll(".js-price-input").forEach((input) => {
+    input.addEventListener("input", () => {
+      input.value = formatPriceInput(input.value);
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,82 @@
+:root{
+  --bg: #0b1220;
+  --card: #0f1a2e;
+  --soft: #132241;
+  --text: #e9eefc;
+  --muted: #a8b3d6;
+  --line: rgba(255,255,255,.10);
+  --accent: #4f7cff;
+  --accent2:#22c55e;
+}
+
+body { background: radial-gradient(1000px 600px at 10% 0%, #152a58 0%, var(--bg) 55%); color: var(--text); }
+a { text-decoration: none; }
+
+.navbar-glass{
+  background: rgba(11,18,32,.68)!important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.card-glass{
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border: 1px solid var(--line);
+  color: var(--text);
+  border-radius: 18px;
+}
+
+.text-muted-2{ color: var(--muted)!important; }
+.btn-accent{
+  background: linear-gradient(135deg, var(--accent), #9b6bff);
+  border: none;
+  color: #fff;
+}
+.btn-accent:hover{ filter: brightness(1.05); color:#fff; }
+
+.badge-chip{
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.04);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.hero{
+  border:1px solid var(--line);
+  border-radius: 22px;
+  padding: 28px;
+  background: linear-gradient(135deg, rgba(79,124,255,.22), rgba(34,197,94,.10));
+}
+
+.thumb{
+  width: 92px; height: 68px; object-fit: cover;
+  border-radius: 12px; border:1px solid var(--line);
+  cursor: pointer;
+  opacity: .9;
+}
+.thumb:hover{ opacity:1; }
+
+.main-photo{
+  width: 100%; height: 360px; object-fit: cover;
+  border-radius: 18px; border:1px solid var(--line);
+  background: rgba(255,255,255,.05);
+}
+
+.car-card-img{
+  height: 190px; width:100%; object-fit: cover;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+
+.soft-input{
+  background: rgba(0,0,0,.18)!important;
+  color: var(--text)!important;
+  border: 1px solid var(--line)!important;
+  border-radius: 14px!important;
+}
+.soft-input::placeholder{ color: rgba(233,238,252,.55); }
+.soft-input:focus{ box-shadow: none!important; border-color: rgba(255,255,255,.22)!important; }
+
+.section-title{ font-weight: 900; letter-spacing: .2px; }
+.small-meta{ font-size: 13px; color: var(--muted); }
+.price{ font-weight: 1000; font-size: 20px; }
+.shadow-soft{ box-shadow: 0 16px 40px rgba(0,0,0,.35); }

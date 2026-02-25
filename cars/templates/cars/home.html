@@ -1,0 +1,93 @@
+{% extends "cars/base.html" %}
+{% block title %}AutoMac Lucena{% endblock %}
+
+{% block content %}
+<div class="hero shadow-soft mb-4">
+  <div class="row align-items-center g-3">
+    <div class="col-lg-7">
+      <h1 class="section-title mb-2">AutoMac Lucena quality units you can trust.</h1>
+      <p class="text-muted-2 mb-3">
+        Browse available units, see real photos, and message us directly for financing and reservation details.
+      </p>
+      <div class="d-flex gap-2 flex-wrap">
+        <a class="btn btn-accent px-4" href="/inventory/">Browse Inventory</a>
+        <a class="btn btn-outline-light px-4" href="https://www.facebook.com/AutoMacLucena" target="_blank" rel="noopener noreferrer">Visit Facebook Page</a>
+        {% if request.user.is_authenticated %}
+          <a class="btn btn-outline-light px-4" href="/owner/">Admin Panel</a>
+        {% else %}
+          <a class="btn btn-outline-light px-4" href="/login/">Admin Login</a>
+        {% endif %}
+      </div>
+      <div class="d-flex gap-2 mt-3 flex-wrap">
+        <span class="badge badge-chip rounded-pill px-3 py-2">As is where is disclosure</span>
+        <span class="badge badge-chip rounded-pill px-3 py-2">Flexible financing options</span>
+        <span class="badge badge-chip rounded-pill px-3 py-2">Real unit photos</span>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card card-glass shadow-soft">
+        <div class="card-body">
+          <div class="fw-bold mb-2">Inquire Fast</div>
+          <div class="small-meta mb-3">For quick replies, message AutoMac Lucena on Facebook.</div>
+          <a class="btn btn-accent w-100 mb-2" href="https://www.facebook.com/AutoMacLucena" target="_blank" rel="noopener noreferrer">Message on Facebook</a>
+          <a class="btn btn-outline-light w-100" href="/inventory/">View All Units</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card card-glass shadow-soft h-100">
+      <div class="card-body">
+        <div class="fw-bold mb-1">Trusted Dealership Flow</div>
+        <div class="small-meta">Clear listing details, transparent condition notes, and direct communication.</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-glass shadow-soft h-100">
+      <div class="card-body">
+        <div class="fw-bold mb-1">Customer Friendly Support</div>
+        <div class="small-meta">Our team can help match budget, preferred year, and financing setup.</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-glass shadow-soft h-100">
+      <div class="card-body">
+        <div class="fw-bold mb-1">Local and Responsive</div>
+        <div class="small-meta">Lucena-based service with social-first updates through Facebook.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h4 class="section-title mb-3">Latest Listings</h4>
+
+<div class="row g-3">
+  {% for car in latest %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card card-glass shadow-soft h-100">
+        {% if car.main_image %}
+          <img src="{{ car.main_image.image.url }}" class="car-card-img" alt="car">
+        {% else %}
+          <div class="d-flex align-items-center justify-content-center" style="height:190px;background:rgba(255,255,255,.06);border-top-left-radius:18px;border-top-right-radius:18px;">
+            <span class="text-muted-2">No image</span>
+          </div>
+        {% endif %}
+        <div class="card-body">
+          <div class="fw-bold">{{ car }}</div>
+          <div class="small-meta">{{ car.location }} | {{ car.transmission }} | {{ car.fuel }}</div>
+          <div class="price mt-2">PHP {{ car.price }}</div>
+          <a class="btn btn-accent btn-sm mt-2" href="/cars/{{ car.id }}/">View</a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="text-muted-2">No listings yet.</div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "cars/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4 class="fw-bold mb-3">{{ title }}</h4>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ car_form.as_p }}
+          <label class="form-label fw-bold">Upload pictures (multiple)</label>
+          {{ img_form.as_p }}
+          <button class="btn btn-primary">Save</button>
+          <a class="btn btn-outline-secondary" href="/owner/">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

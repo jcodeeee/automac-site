@@ -1,0 +1,9 @@
+<h2>{{ title }}</h2>
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ car_form.as_p }}
+  <p>Upload pictures (multiple allowed):</p>
+  {{ img_form.as_p }}
+  <button type="submit">Save</button>
+</form>
+<a href="/owner/">Back</a>

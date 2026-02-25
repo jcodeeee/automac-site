@@ -1,0 +1,8 @@
+.env
+config/.env
+__pycache__/
+*.pyc
+venv/
+db.sqlite3
+fb_post_raw.html
+fb_mobile_post.html

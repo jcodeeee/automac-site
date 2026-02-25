@@ -1,0 +1,179 @@
+:root{
+  --bg: #101114;
+  --card: #191b20;
+  --soft: #22252d;
+  --text: #f8fafc;
+  --muted: #d2d6df;
+  --line: rgba(255,255,255,.10);
+  --accent: #e11d2e;
+  --accent2:#f59e0b;
+}
+
+body { background: radial-gradient(1000px 600px at 10% 0%, #2a1d22 0%, var(--bg) 55%); color: var(--text); }
+a { text-decoration: none; }
+
+.navbar-glass{
+  background: rgba(11,18,32,.68)!important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.card-glass{
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border: 1px solid var(--line);
+  color: var(--text);
+  border-radius: 18px;
+}
+
+.text-muted-2{ color: var(--muted)!important; }
+.btn-accent{
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  color: #fff;
+}
+.btn-accent:hover{ filter: brightness(1.05); color:#fff; }
+
+.badge-chip{
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.04);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.hero{
+  border:1px solid var(--line);
+  border-radius: 22px;
+  padding: 28px;
+  background: linear-gradient(135deg, rgba(225,29,46,.22), rgba(245,158,11,.12));
+  animation: heroFade .5s ease-out;
+}
+
+.thumb{
+  width: 92px; height: 68px; object-fit: cover;
+  border-radius: 12px; border:1px solid var(--line);
+  cursor: pointer;
+  opacity: .9;
+}
+.thumb:hover{ opacity:1; }
+
+.main-photo{
+  width: 100%; height: 360px; object-fit: cover;
+  border-radius: 18px; border:1px solid var(--line);
+  background: rgba(255,255,255,.05);
+}
+
+.car-card-img{
+  height: 190px; width:100%; object-fit: cover;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+
+.soft-input{
+  background: rgba(0,0,0,.18)!important;
+  color: var(--text)!important;
+  border: 1px solid var(--line)!important;
+  border-radius: 14px!important;
+}
+.soft-input::placeholder{ color: rgba(233,238,252,.72); }
+.soft-input:focus{ box-shadow: none!important; border-color: rgba(255,255,255,.22)!important; }
+
+/* Improve select/dropdown readability */
+select.soft-input{
+  background-color: #1a1d23 !important;
+  color: #f8fafc !important;
+  border-color: rgba(255,255,255,.22) !important;
+}
+select.soft-input option{
+  background: #0f1116;
+  color: #f8fafc;
+}
+select.soft-input option:checked{
+  background: #e11d2e;
+  color: #ffffff;
+}
+
+.section-title{ font-weight: 900; letter-spacing: .2px; }
+.small-meta{ font-size: 13px; color: var(--muted); }
+.price{ font-weight: 1000; font-size: 20px; }
+.shadow-soft{ box-shadow: 0 16px 40px rgba(0,0,0,.35); }
+.card-glass{ transition: transform .2s ease, box-shadow .2s ease; }
+.card-glass:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(0,0,0,.45);
+}
+
+.page-link{
+  background: rgba(255,255,255,.04);
+  color: var(--text);
+  border-color: var(--line);
+}
+.page-link:hover{
+  background: rgba(255,255,255,.10);
+  color: #fff;
+  border-color: var(--line);
+}
+.page-item.active .page-link{
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-color: transparent;
+}
+
+@keyframes heroFade{
+  from{ opacity: 0; transform: translateY(8px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+.page-item.disabled .page-link{
+  background: rgba(255,255,255,.03);
+  color: rgba(233,238,252,.45);
+}
+
+/* White blocks inside dark theme need dark text for readability */
+.bg-white{
+  color: #111827 !important;
+}
+.bg-white .text-muted{
+  color: #4b5563 !important;
+}
+.bg-white .small{
+  color: #374151;
+}
+
+/* Owner dashboard row readability */
+.owner-row,
+.booking-row{
+  color: #0f172a !important;
+}
+.owner-row-title,
+.booking-row-title{
+  color: #0b1220;
+  font-size: 15px;
+  line-height: 1.35;
+}
+.owner-row-meta,
+.booking-row-meta{
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+@media (min-width: 992px){
+  .inventory-filters{
+    position: sticky;
+    top: 88px;
+    z-index: 10;
+  }
+}
+
+@media (max-width: 991.98px){
+  body{ padding-bottom: 88px; }
+  .mobile-cta{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1030;
+    padding: 10px 0;
+    background: rgba(11,18,32,.92);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line);
+  }
+}
