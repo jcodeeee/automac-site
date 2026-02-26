@@ -64,7 +64,10 @@ class CarForm(forms.ModelForm):
         self.fields["transmission"] = forms.ChoiceField(choices=trans_choices, required=True)
         self.fields["fuel"] = forms.ChoiceField(choices=fuel_choices, required=True)
 
-        self.fields["price"].widget.attrs.update({"placeholder": "e.g. 1,250,000"})
+        self.fields["price"].widget = forms.TextInput(attrs={
+            "placeholder": "e.g. 1,250,000",
+            "inputmode": "numeric",
+        })
 
         for name, field in self.fields.items():
             if name == "is_available":
