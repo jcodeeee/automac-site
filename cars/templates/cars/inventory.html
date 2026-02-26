@@ -100,7 +100,8 @@
         {% endif %}
         <div class="card-body">
           <div class="fw-bold">{{ car }}</div>
-          <div class="small-meta">{{ car.location }} | {{ car.transmission }} | {{ car.fuel }}</div>
+          <div class="small-meta">{{ car.location }} | {{ car.body_type }} | {{ car.seating_capacity }} seats</div>
+          <div class="small-meta">{{ car.transmission }} | {{ car.fuel }}</div>
           <div class="price mt-2">PHP {{ car.price }}</div>
           <a class="btn btn-accent btn-sm mt-2" href="/cars/{{ car.id }}/">View</a>
         </div>

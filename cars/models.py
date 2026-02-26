@@ -2,9 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Car(models.Model):
+    BODY_TYPE_CHOICES = [
+        ("Sedan", "Sedan"),
+        ("SUV", "SUV"),
+        ("Van", "Van"),
+    ]
+
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cars")
     brand = models.CharField(max_length=60)
     model = models.CharField(max_length=60)
+    body_type = models.CharField(max_length=20, choices=BODY_TYPE_CHOICES, default="Sedan")
+    seating_capacity = models.PositiveSmallIntegerField(default=5)
     year = models.IntegerField()
     price = models.DecimalField(max_digits=12, decimal_places=2)
     mileage = models.IntegerField(default=0)

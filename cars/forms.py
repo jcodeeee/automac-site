@@ -24,11 +24,13 @@ class CarForm(forms.ModelForm):
     }
     TRANSMISSION_CHOICES = ["Automatic", "Manual", "CVT", "DCT", "AT", "MT"]
     FUEL_CHOICES = ["Gasoline", "Diesel", "Hybrid", "Electric", "LPG"]
+    BODY_TYPE_CHOICES = ["Sedan", "SUV", "Van"]
+    SEATING_CHOICES = [2, 4, 5, 6, 7, 8, 9, 10, 12, 15]
 
     class Meta:
         model = Car
         fields = [
-            "brand","model","year","price","mileage",
+            "brand","model","body_type","seating_capacity","year","price","mileage",
             "transmission","fuel","description","is_available"
         ]
 
@@ -43,6 +45,8 @@ class CarForm(forms.ModelForm):
         model_choices = [("", "Select model")] + [(m, m) for m in model_pool]
         trans_choices = [("", "Select transmission")] + [(t, t) for t in self.TRANSMISSION_CHOICES]
         fuel_choices = [("", "Select fuel")] + [(f, f) for f in self.FUEL_CHOICES]
+        body_type_choices = [("", "Select body type")] + [(b, b) for b in self.BODY_TYPE_CHOICES]
+        seating_choices = [("", "Select seating")] + [(s, f"{s} seats") for s in self.SEATING_CHOICES]
 
         if self.instance and self.instance.pk:
             if self.instance.brand and self.instance.brand not in self.BRAND_CHOICES:
@@ -53,11 +57,21 @@ class CarForm(forms.ModelForm):
                 trans_choices.append((self.instance.transmission, self.instance.transmission))
             if self.instance.fuel and self.instance.fuel not in self.FUEL_CHOICES:
                 fuel_choices.append((self.instance.fuel, self.instance.fuel))
+            if self.instance.body_type and self.instance.body_type not in self.BODY_TYPE_CHOICES:
+                body_type_choices.append((self.instance.body_type, self.instance.body_type))
+            if self.instance.seating_capacity and self.instance.seating_capacity not in self.SEATING_CHOICES:
+                seating_choices.append((self.instance.seating_capacity, f"{self.instance.seating_capacity} seats"))
 
         self.fields["brand"] = forms.ChoiceField(choices=brand_choices, required=True)
         self.fields["model"] = forms.ChoiceField(choices=model_choices, required=True)
         self.fields["year"] = forms.TypedChoiceField(
             choices=[("", "Select year")] + year_choices,
+            coerce=int,
+            required=True,
+        )
+        self.fields["body_type"] = forms.ChoiceField(choices=body_type_choices, required=True)
+        self.fields["seating_capacity"] = forms.TypedChoiceField(
+            choices=seating_choices,
             coerce=int,
             required=True,
         )
