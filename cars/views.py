@@ -140,7 +140,13 @@ def _send_owner_booking_email(booking: Booking):
     if alert_email and alert_email not in recipients:
         recipients.append(alert_email)
     if recipients:
-        send_mail(subject, msg, settings.DEFAULT_FROM_EMAIL, recipients, fail_silently=True)
+        send_mail(
+            subject,
+            msg,
+            settings.DEFAULT_FROM_EMAIL,
+            recipients,
+            fail_silently=getattr(settings, "EMAIL_FAIL_SILENTLY", False),
+        )
 
 def _send_customer_booking_email(booking: Booking):
     if not booking.email:
@@ -156,7 +162,13 @@ def _send_customer_booking_email(booking: Booking):
         f"Thank you,\n"
         f"AutoMac Lucena"
     )
-    send_mail(subject, msg, settings.DEFAULT_FROM_EMAIL, [booking.email], fail_silently=True)
+    send_mail(
+        subject,
+        msg,
+        settings.DEFAULT_FROM_EMAIL,
+        [booking.email],
+        fail_silently=getattr(settings, "EMAIL_FAIL_SILENTLY", False),
+    )
 
 def _send_customer_status_email(booking: Booking):
     if not booking.email:
@@ -170,7 +182,13 @@ def _send_customer_status_email(booking: Booking):
         f"Thank you,\n"
         f"AutoMac Lucena"
     )
-    send_mail(subject, msg, settings.DEFAULT_FROM_EMAIL, [booking.email], fail_silently=True)
+    send_mail(
+        subject,
+        msg,
+        settings.DEFAULT_FROM_EMAIL,
+        [booking.email],
+        fail_silently=getattr(settings, "EMAIL_FAIL_SILENTLY", False),
+    )
 
 def _send_booking_notifications(booking: Booking):
     _send_owner_booking_email(booking)
