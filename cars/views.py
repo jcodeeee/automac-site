@@ -227,7 +227,14 @@ def book_test_drive(request, pk):
 @login_required
 def owner_dashboard(request):
     cars = Car.objects.filter(owner=request.user).order_by("-created_at")
-    bookings = Booking.objects.filter(car__owner=request.user).order_by("-created_at")[:10]
+    booking_status = request.GET.get("booking_status", "All").strip()
+    bookings_qs = Booking.objects.filter(car__owner=request.user).order_by("-created_at")
+    if booking_status in ["Pending", "Approved", "Rejected", "Done"]:
+        bookings_qs = bookings_qs.filter(status=booking_status)
+    else:
+        booking_status = "All"
+    bookings = bookings_qs[:50]
+    booking_tabs = ["All", "Pending", "Approved", "Rejected", "Done"]
     now = timezone.now()
     analytics = cars.aggregate(
         total_cars=Count("id"),
@@ -241,7 +248,17 @@ def owner_dashboard(request):
         sold_at__year=now.year,
         sold_at__month=now.month,
     ).count()
-    return render(request, "cars/owner_dashboard.html", {"cars": cars, "bookings": bookings, "analytics": analytics})
+    return render(
+        request,
+        "cars/owner_dashboard.html",
+        {
+            "cars": cars,
+            "bookings": bookings,
+            "analytics": analytics,
+            "booking_tabs": booking_tabs,
+            "selected_booking_status": booking_status,
+        },
+    )
 
 @login_required
 def car_create(request):
@@ -356,4 +373,12 @@ def booking_update_status(request, booking_id, status):
     booking.status = status
     booking.save(update_fields=["status"])
     _send_customer_status_email(booking)
-    return redirect("owner_dashboard")
+    selected_status = request.GET.get("booking_status", "All")
+    return redirect(f"/owner/?booking_status={selected_status}")
+
+@login_required
+def booking_delete(request, booking_id):
+    booking = get_object_or_404(Booking, pk=booking_id, car__owner=request.user)
+    selected_status = request.GET.get("booking_status", "All")
+    booking.delete()
+    return redirect(f"/owner/?booking_status={selected_status}")

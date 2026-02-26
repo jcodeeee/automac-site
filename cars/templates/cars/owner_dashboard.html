@@ -108,6 +108,13 @@
     <div class="card card-glass shadow-soft">
       <div class="card-body">
         <h5 class="fw-bold mb-3">Latest Bookings</h5>
+        <div class="d-flex gap-2 flex-wrap mb-3">
+          {% for tab in booking_tabs %}
+            <a class="btn btn-sm {% if selected_booking_status == tab %}btn-accent{% else %}btn-outline-light{% endif %}" href="/owner/?booking_status={{ tab }}">
+              {{ tab }}
+            </a>
+          {% endfor %}
+        </div>
         <div class="bookings-scroll">
           {% for b in bookings %}
             <div class="border rounded p-2 mb-2 bg-white booking-row">
@@ -115,9 +122,10 @@
               <div class="booking-row-meta">{{ b.car }} | {{ b.preferred_date }} {{ b.preferred_time }}</div>
               <div class="booking-row-meta">Phone: {{ b.phone }} {% if b.email %}| Email: {{ b.email }}{% endif %}</div>
               <div class="d-flex gap-2 mt-2">
-                <a class="btn btn-sm btn-success" href="/owner/bookings/{{ b.id }}/Approved/">Approve</a>
-                <a class="btn btn-sm btn-danger" href="/owner/bookings/{{ b.id }}/Rejected/">Reject</a>
-                <a class="btn btn-sm btn-dark" href="/owner/bookings/{{ b.id }}/Done/">Done</a>
+                <a class="btn btn-sm btn-success" href="/owner/bookings/{{ b.id }}/Approved/?booking_status={{ selected_booking_status }}">Approve</a>
+                <a class="btn btn-sm btn-danger" href="/owner/bookings/{{ b.id }}/Rejected/?booking_status={{ selected_booking_status }}">Reject</a>
+                <a class="btn btn-sm btn-dark" href="/owner/bookings/{{ b.id }}/Done/?booking_status={{ selected_booking_status }}">Done</a>
+                <a class="btn btn-sm btn-outline-danger" href="/owner/bookings/{{ b.id }}/delete/?booking_status={{ selected_booking_status }}" onclick="return confirm('Delete this booking?');">Delete</a>
               </div>
             </div>
           {% empty %}

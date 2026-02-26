@@ -26,4 +26,5 @@ urlpatterns = [
 
     # booking status
     path("owner/bookings/<int:booking_id>/<str:status>/", views.booking_update_status, name="booking_update_status"),
+    path("owner/bookings/<int:booking_id>/delete/", views.booking_delete, name="booking_delete"),
 ]

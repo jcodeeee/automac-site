@@ -77,6 +77,18 @@ a { text-decoration: none; }
 .soft-input::placeholder{ color: rgba(233,238,252,.72); }
 .soft-input:focus{ box-shadow: none!important; border-color: rgba(255,255,255,.22)!important; }
 
+/* Improve visibility of date/time picker controls on dark inputs */
+.soft-input[type="date"],
+.soft-input[type="time"]{
+  color-scheme: dark;
+}
+.soft-input[type="date"]::-webkit-calendar-picker-indicator,
+.soft-input[type="time"]::-webkit-calendar-picker-indicator{
+  filter: invert(1) brightness(1.4);
+  opacity: .95;
+  cursor: pointer;
+}
+
 /* Improve select/dropdown readability */
 select.soft-input{
   background-color: #1a1d23 !important;
