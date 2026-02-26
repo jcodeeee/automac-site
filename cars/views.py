@@ -249,7 +249,8 @@ def car_create(request):
     return render(request, "cars/car_form.html", {
         "car_form": car_form,
         "img_form": img_form,
-        "title": "Add Car"
+        "title": "Add Car",
+        "brand_model_map": CarForm.BRAND_MODEL_MAP,
     })
 
 @login_required
@@ -280,7 +281,8 @@ def car_edit(request, pk):
     return render(request, "cars/car_form.html", {
         "car_form": car_form,
         "img_form": img_form,
-        "title": "Edit Car"
+        "title": "Edit Car",
+        "brand_model_map": CarForm.BRAND_MODEL_MAP,
     })
 
 @login_required

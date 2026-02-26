@@ -8,6 +8,7 @@
         <h4 class="fw-bold mb-3 section-title">{{ title }}</h4>
         <form method="POST" enctype="multipart/form-data">
           {% csrf_token %}
+          {{ brand_model_map|json_script:"brand-model-map" }}
           <div class="row g-2">
             <div class="col-md-6">
               <label class="form-label text-muted-2">Brand</label>
@@ -66,6 +67,37 @@
 
 {% block scripts %}
 <script>
+  const brandModelMapEl = document.getElementById("brand-model-map");
+  const brandModelMap = brandModelMapEl ? JSON.parse(brandModelMapEl.textContent) : {};
+  const brandSelect = document.getElementById("id_brand");
+  const modelSelect = document.getElementById("id_model");
+
+  function rebuildModelOptions(brand, keepValue) {
+    if (!modelSelect) return;
+    const models = brandModelMap[brand] || [];
+    modelSelect.innerHTML = "";
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Select model";
+    modelSelect.appendChild(placeholder);
+
+    models.forEach((model) => {
+      const opt = document.createElement("option");
+      opt.value = model;
+      opt.textContent = model;
+      if (keepValue && keepValue === model) opt.selected = true;
+      modelSelect.appendChild(opt);
+    });
+  }
+
+  if (brandSelect && modelSelect) {
+    const initialModel = modelSelect.value;
+    rebuildModelOptions(brandSelect.value, initialModel);
+    brandSelect.addEventListener("change", () => {
+      rebuildModelOptions(brandSelect.value, "");
+    });
+  }
+
   function formatPriceValue(value) {
     const digits = value.replace(/[^\d]/g, "");
     if (!digits) return "";

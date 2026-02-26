@@ -9,19 +9,19 @@ class CarForm(forms.ModelForm):
         "Kia", "Mazda", "Chevrolet", "Subaru", "Volkswagen", "BMW", "Mercedes-Benz",
         "Audi", "Lexus", "Porsche", "Jeep", "Tesla", "MG", "BYD", "Chery", "Geely",
     ]
-    MODEL_CHOICES = [
-        "Vios", "Yaris", "Corolla Altis", "Camry", "Innova", "Fortuner", "Hilux", "Rush", "Wigo",
-        "Montero Sport", "Strada", "Mirage", "Xpander", "L300", "Adventure",
-        "Civic", "City", "Brio", "HR-V", "CR-V", "Jazz", "Mobilio",
-        "Almera", "Navara", "Terra", "Juke", "Patrol", "Urvan",
-        "Swift", "Dzire", "Ertiga", "Celerio", "Jimny", "APV", "Carry",
-        "Everest", "Ranger", "Territory", "Explorer",
-        "D-Max", "MU-X",
-        "Accent", "Elantra", "Tucson", "Santa Fe", "Stargazer",
-        "Picanto", "Rio", "Seltos", "Sportage",
-        "Mazda2", "Mazda3", "CX-3", "CX-5", "CX-9",
-        "Model 3", "Model Y",
-    ]
+    BRAND_MODEL_MAP = {
+        "Toyota": ["Vios", "Yaris", "Corolla Altis", "Camry", "Innova", "Fortuner", "Hilux", "Rush", "Wigo"],
+        "Mitsubishi": ["Montero Sport", "Strada", "Mirage", "Xpander", "L300", "Adventure"],
+        "Honda": ["Civic", "City", "Brio", "HR-V", "CR-V", "Jazz", "Mobilio"],
+        "Nissan": ["Almera", "Navara", "Terra", "Juke", "Patrol", "Urvan"],
+        "Suzuki": ["Swift", "Dzire", "Ertiga", "Celerio", "Jimny", "APV", "Carry"],
+        "Ford": ["Everest", "Ranger", "Territory", "Explorer"],
+        "Isuzu": ["D-Max", "MU-X"],
+        "Hyundai": ["Accent", "Elantra", "Tucson", "Santa Fe", "Stargazer"],
+        "Kia": ["Picanto", "Rio", "Seltos", "Sportage"],
+        "Mazda": ["Mazda2", "Mazda3", "CX-3", "CX-5", "CX-9"],
+        "Tesla": ["Model 3", "Model Y"],
+    }
     TRANSMISSION_CHOICES = ["Automatic", "Manual", "CVT", "DCT", "AT", "MT"]
     FUEL_CHOICES = ["Gasoline", "Diesel", "Hybrid", "Electric", "LPG"]
 
@@ -38,14 +38,16 @@ class CarForm(forms.ModelForm):
         year_choices = [(y, str(y)) for y in range(current_year, 1989, -1)]
 
         brand_choices = [("", "Select brand")] + [(b, b) for b in self.BRAND_CHOICES]
-        model_choices = [("", "Select model")] + [(m, m) for m in self.MODEL_CHOICES]
+        selected_brand = self.data.get("brand") or (self.instance.brand if self.instance and self.instance.pk else "")
+        model_pool = self.BRAND_MODEL_MAP.get(selected_brand, [])
+        model_choices = [("", "Select model")] + [(m, m) for m in model_pool]
         trans_choices = [("", "Select transmission")] + [(t, t) for t in self.TRANSMISSION_CHOICES]
         fuel_choices = [("", "Select fuel")] + [(f, f) for f in self.FUEL_CHOICES]
 
         if self.instance and self.instance.pk:
             if self.instance.brand and self.instance.brand not in self.BRAND_CHOICES:
                 brand_choices.append((self.instance.brand, self.instance.brand))
-            if self.instance.model and self.instance.model not in self.MODEL_CHOICES:
+            if self.instance.model and self.instance.model not in model_pool:
                 model_choices.append((self.instance.model, self.instance.model))
             if self.instance.transmission and self.instance.transmission not in self.TRANSMISSION_CHOICES:
                 trans_choices.append((self.instance.transmission, self.instance.transmission))
@@ -80,6 +82,16 @@ class CarForm(forms.ModelForm):
             return Decimal(raw)
         except (TypeError, ValueError, InvalidOperation):
             raise forms.ValidationError("Enter a valid price.")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        brand = cleaned_data.get("brand")
+        model = cleaned_data.get("model")
+        if brand and model:
+            allowed_models = self.BRAND_MODEL_MAP.get(brand, [])
+            if allowed_models and model not in allowed_models:
+                self.add_error("model", "Selected model does not match the selected brand.")
+        return cleaned_data
 
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
