@@ -233,6 +233,8 @@ def car_create(request):
     if request.method == "POST" and car_form.is_valid():
         car = car_form.save(commit=False)
         car.owner = request.user
+        if not car.location:
+            car.location = "Lucena City, Quezon"
         car.save()
 
         images = request.FILES.getlist("images")
@@ -259,6 +261,9 @@ def car_edit(request, pk):
 
     if request.method == "POST" and car_form.is_valid():
         car = car_form.save()
+        if not car.location:
+            car.location = "Lucena City, Quezon"
+            car.save(update_fields=["location"])
         if car.is_available and car.sold_at is not None:
             car.sold_at = None
             car.save(update_fields=["sold_at"])

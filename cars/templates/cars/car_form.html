@@ -3,19 +3,84 @@
 {% block content %}
 <div class="row justify-content-center">
   <div class="col-lg-8">
-    <div class="card shadow-sm">
+    <div class="card card-glass shadow-soft">
       <div class="card-body">
-        <h4 class="fw-bold mb-3">{{ title }}</h4>
+        <h4 class="fw-bold mb-3 section-title">{{ title }}</h4>
         <form method="POST" enctype="multipart/form-data">
           {% csrf_token %}
-          {{ car_form.as_p }}
-          <label class="form-label fw-bold">Upload pictures (multiple)</label>
-          {{ img_form.as_p }}
-          <button class="btn btn-primary">Save</button>
-          <a class="btn btn-outline-secondary" href="/owner/">Cancel</a>
+          <div class="row g-2">
+            <div class="col-md-6">
+              <label class="form-label text-muted-2">Brand</label>
+              {{ car_form.brand }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted-2">Model</label>
+              {{ car_form.model }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted-2">Year</label>
+              {{ car_form.year }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted-2">Price</label>
+              {{ car_form.price }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted-2">Mileage (km)</label>
+              {{ car_form.mileage }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted-2">Transmission</label>
+              {{ car_form.transmission }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted-2">Fuel</label>
+              {{ car_form.fuel }}
+            </div>
+            <div class="col-12">
+              <label class="form-label text-muted-2">Description</label>
+              {{ car_form.description }}
+            </div>
+            <div class="col-12">
+              <div class="form-check mt-2">
+                {{ car_form.is_available }}
+                <label class="form-check-label text-muted-2" for="{{ car_form.is_available.id_for_label }}">
+                  Available for listing
+                </label>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold text-muted-2">Upload pictures (multiple)</label>
+              {{ img_form.images }}
+            </div>
+          </div>
+
+          <button class="btn btn-accent mt-3">Save</button>
+          <a class="btn btn-outline-light mt-3" href="/owner/">Cancel</a>
         </form>
       </div>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function formatPriceValue(value) {
+    const digits = value.replace(/[^\d]/g, "");
+    if (!digits) return "";
+    return Number(digits).toLocaleString("en-US");
+  }
+
+  const priceInput = document.getElementById("id_price");
+  if (priceInput) {
+    priceInput.value = formatPriceValue(priceInput.value);
+    priceInput.addEventListener("input", () => {
+      priceInput.value = formatPriceValue(priceInput.value);
+    });
+    priceInput.form?.addEventListener("submit", () => {
+      priceInput.value = priceInput.value.replace(/,/g, "");
+    });
+  }
+</script>
 {% endblock %}
